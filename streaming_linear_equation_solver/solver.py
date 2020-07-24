@@ -85,10 +85,3 @@ class Solver:
         self.print(1, 'constants: {}'.format(self.constants))
         self.print(1, 'references: {}'.format(repr(self.references)[27: -1]))
         self.print(1, 'substitutions: {}\n'.format(self.substitutions))
-
-
-if __name__ == '__main__':
-    sv = Solver()
-    sv.input({'x':1, 'z': 1}, 6)
-    sv.input({'z':1, 'y': -3}, 7)
-    sv.input({'x':2, 'y': 1, 'z': 3}, 15)
