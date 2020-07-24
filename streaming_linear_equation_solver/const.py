@@ -80,6 +80,10 @@ class Const:
     def __idiv__(self, other):
         return self.__truediv__(other)
 
+    @property
+    def value(self):
+        return self.n / self.d
+
     @staticmethod
     def _get_n_and_d(value):
         if isinstance(value, Const):
