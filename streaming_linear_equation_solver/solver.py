@@ -17,7 +17,7 @@ class Unit:
 
 
 class Solver:
-    def __init__(self, constants: Dict[str, Union[int, float, Const]]=None, verbose: int=1):
+    def __init__(self, constants: Dict[str, Union[int, float, Const]]=None, verbose: int=0):
         """
 
         :param constants: pre-defined variables with known value
