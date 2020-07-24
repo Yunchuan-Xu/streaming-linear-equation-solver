@@ -1,5 +1,7 @@
 from collections import defaultdict
+from typing import Dict, Union
 
+from .const import Const
 from .linear_sum import LinearSum
 
 
@@ -15,10 +17,11 @@ class Unit:
 
 
 class Solver:
-    def __init__(self, constants: dict=None, verbose: int=1):
+    def __init__(self, constants: Dict[str, Union[int, float, Const]]=None, verbose: int=1):
         """
 
-        :param constants: key as variable name, value as constant value of the variable
+        :param constants: pre-defined variables with known value
+                          keys are variable names, values are known values
         :param verbose: 0 or 1
         """
         self.verbose = verbose
@@ -27,17 +30,24 @@ class Solver:
         self.references = defaultdict(set)
         self.substitutions = {}
 
-    def print(self, level, msg):
+    def print(self, level: int, msg: str):
         if self.verbose >= level:
             print(msg)
 
-    def eval(self, expression):
+    def eval(self, expression: LinearSum):
         if len(expression) == 0:
             return 0
         elif len(expression) == 1 and self.unit in expression:
             return expression[self.unit]
 
-    def input(self, lhs, rhs):
+    def input(self, lhs: Dict[str, Union[int, float, Const]], rhs: Union[int, float, Const]):
+        """
+        input an equation where left hand side is linear sum of variable terms and right hand side is a constant term
+        
+        :param lhs: variable terms
+                    keys are variable names, values are multiplication factors
+        :param rhs: constant term
+        """
         # prepare expression
         lhs[self.unit] = -rhs
         expr = LinearSum(lhs)
@@ -67,6 +77,7 @@ class Solver:
         val = self.eval(expr)
         self.print(1, 'var equation: {} = {}'.format(var, expr))
 
+        # update target variable
         if val is None:
             self.substitutions[var] = expr
             for gval in expr.terms:
@@ -75,6 +86,7 @@ class Solver:
         else:
             self.constants[var] = val
 
+        # update referenced variables
         if var in self.references:
             for svar in self.references.pop(var):
                 self.substitutions[svar].substitute(var, expr)
